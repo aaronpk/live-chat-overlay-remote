@@ -13,7 +13,7 @@
 
 // Wait for streaming data
 var pushstream = new PushStream({
-  host: window.location.hostname,
+  host: 'chat.aaronpk.tv', // window.location.hostname,
   port: 443,
   useSSL: true,
   modes: "eventsource",
@@ -27,10 +27,10 @@ pushstream.onmessage = function(data,id,channel) {
 
     case 'show':
       hideMessageImmediately();
-      showMessage(data);
       if(data.config) {
         loadConfig(data.config);
       }
+      showMessage(data.data);
       break;
 
     case 'hide':
@@ -47,7 +47,37 @@ pushstream.connect();
 
 
 function showMessage(data, hideAfterDelay=0) {
-  var message = $( "highlight-chat" ).removeClass("preview").append(data.html)
+
+  console.log(data);
+
+  var donationHTML = '';
+  if(data.donation) {
+    donationHTML = '<div class="donation">' + data.donation + '</div>';
+  }
+
+  var membershipHTML = '';
+  if(data.membership) {
+    membershipHTML = '<div class="donation membership">NEW MEMBER!</div>';
+  }
+
+  if(data.membership) {
+    data.message = data.membership;
+  }
+
+  if(data.sticker) {
+    data.message = '<img src="'+data.sticker+'">';
+  }
+
+  var html = '<div class="hl-c-cont fadeout">'
+     + '<div class="hl-name">' + data.authorName
+       + '<div class="hl-badges">' + data.badges + '</div>'
+     + '</div>'
+     + '<div class="hl-message" style="'+data.backgroundColor+' '+data.textColor+'">' + data.message + '</div>'
+     + '<div class="hl-img"><img src="' + data.authorImg + '"></div>'
+     +donationHTML+membershipHTML
+   +'</div>';
+
+  var message = $( "highlight-chat" ).removeClass("preview").append(html)
   .delay(10).queue(function(next){
     $( ".hl-c-cont" ).removeClass("fadeout");
     next();
