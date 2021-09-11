@@ -30,7 +30,11 @@ pushstream.onmessage = function(data,id,channel) {
       if(data.config) {
         loadConfig(data.config);
       }
-      showMessage(data.data);
+      if(data.html) {
+        showLegacyMessage(data);
+      } else {
+        showMessage(data.data);
+      }
       break;
 
     case 'hide':
@@ -45,6 +49,21 @@ var channel = window.location.hash.replace("#","");
 pushstream.addChannel(channel);
 pushstream.connect();
 
+function showLegacyMessage(data, hideAfterDelay=0) {
+  var message = $( "highlight-chat" ).removeClass("preview").append(data.html)
+  .delay(10).queue(function(next){
+    $( ".hl-c-cont" ).removeClass("fadeout");
+    next();
+  });
+  if(hideAfterDelay) {
+    message.delay(hideAfterDelay).queue(function(next){
+      $(".hl-c-cont").addClass("fadeout").delay(300).queue(function(){
+        $(".hl-c-cont").remove().dequeue();
+      });
+      next();
+    });
+  }
+}
 
 function showMessage(data, hideAfterDelay=0) {
 
