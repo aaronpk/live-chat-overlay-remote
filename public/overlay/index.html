@@ -13,7 +13,7 @@
 
 // Wait for streaming data
 var pushstream = new PushStream({
-  host: 'chat.aaronpk.tv', // window.location.hostname,
+  host: window.location.hostname,
   port: 443,
   useSSL: true,
   modes: "eventsource",
