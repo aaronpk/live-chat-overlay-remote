@@ -25,11 +25,12 @@ pushstream.onmessage = function(data,id,channel) {
 
   switch(data.command) {
 
+    if(data.config) {
+      loadConfig(data.config);
+    }
+
     case 'show':
       hideMessageImmediately();
-      if(data.config) {
-        loadConfig(data.config);
-      }
       if(data.html) {
         showLegacyMessage(data);
       } else {
