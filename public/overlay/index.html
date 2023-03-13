@@ -23,11 +23,11 @@ var pushstream = new PushStream({
 });
 pushstream.onmessage = function(data,id,channel) {
 
-  switch(data.command) {
+  if(data.config) {
+    loadConfig(data.config);
+  }
 
-    if(data.config) {
-      loadConfig(data.config);
-    }
+  switch(data.command) {
 
     case 'show':
       hideMessageImmediately();
